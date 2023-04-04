@@ -1,0 +1,11 @@
+<table class="min-w-full divide-y divide-gray-300">
+  <tbody class="divide-y divide-gray-200">
+    <% scores.each.with_index(1) do |score, idx| %>
+      <tr>
+        <td class="whitespace-nowrap text-sm text-gray-500 font-bold"><%= idx.ordinalize %></td>
+        <td class="whitespace-nowrap pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"><%= score.name %></td>
+        <td class="whitespace-nowrap px-3 text-sm text-gray-500"><%= score.time %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
