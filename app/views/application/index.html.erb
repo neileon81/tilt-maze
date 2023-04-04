@@ -19,6 +19,9 @@
   </div>
 </div>
 
-<div id="leaderboard" class="my-24 mx-auto" style="width: 500px;">
-  <%= render partial: "leaderboard", locals: {scores: @scores} %>
-</div>
+<%= turbo_stream_from "scores" %>
+<%= turbo_frame_tag "scores" do %>
+  <div id="leaderboard" class="my-24 mx-auto" style="width: 500px;">
+    <%= render partial: "leaderboard", locals: {scores: @scores} %>
+  </div>
+<% end %>

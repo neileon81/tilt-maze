@@ -1,6 +1,15 @@
 class Score < ApplicationRecord
   default_scope { order("centiseconds ASC") }
 
+  after_create_commit { refresh_leaderboard }
+  after_destroy_commit { refresh_leaderboard }
+
+  def refresh_leaderboard
+    leaderboard = Score.first(5)
+
+    broadcast_update_to("scores", target: "leaderboard", partial: "leaderboard", locals: {scores: leaderboard})
+  end
+
   def time
     cseconds = pad(centiseconds % 100)
     seconds = pad((centiseconds/100).to_i % 60)
