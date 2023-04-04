@@ -1,0 +1,12 @@
+<div data-controller="game" class="my-7 font-bold text-4xl mx-auto" style="width: 500px;">
+  <%= turbo_frame_tag "new_score" do %>
+    <%= form_with model: Score.new, data: { "game-target": "form" } do |form| %>
+      <%= form.text_field :name, class: "mx-auto block w-full border-0", style: "background-color: #ede6e3; font-size: .9em;", placeholder: "Your name", value: "Guest-#{SecureRandom.hex(3)}" %>
+      <%= form.hidden_field :centiseconds, data: { "game-target": "centisecondsOutput" } %>
+    <% end %>
+  <% end %>
+
+  <div class="mx-auto w-full" style="padding: .5rem .75rem;">
+    <span data-game-target="minutes">00</span>:<span data-game-target="seconds">00</span>:<span data-game-target="centiseconds">00</span>
+  </div>
+</div>
