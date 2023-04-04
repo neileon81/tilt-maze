@@ -1,3 +1,7 @@
+const gameStartedEvent = new Event("gameStarted");
+const gameEndedEvent = new Event("gameEnded");
+const gameResettedEvent = new Event("gameResetted");
+
 Math.minmax = (value, limit) => {
   return Math.max(Math.min(value, limit), -limit);
 };
@@ -247,6 +251,8 @@ joystickHeadElement.addEventListener("mousedown", function (event) {
         animation: none;
         cursor: grabbing;
       `;
+
+    document.dispatchEvent(gameStartedEvent);
   }
 });
 
@@ -281,30 +287,31 @@ window.addEventListener("mousemove", function (event) {
 
 window.addEventListener("keydown", function (event) {
   // If not an arrow key or space or H was pressed then return
-  if (![" ", "H", "h", "E", "e"].includes(event.key)) return;
+  // if (![" ", "H", "h", "E", "e"].includes(event.key)) return;
+  if (!["Escape"].includes(event.key)) return;
 
   // If an arrow key was pressed then first prevent default
   event.preventDefault();
 
   // If space was pressed restart the game
-  if (event.key == " ") {
+  if (event.key == "Escape") {
     resetGame();
     return;
   }
 
-  // Set Hard mode
-  if (event.key == "H" || event.key == "h") {
-    hardMode = true;
-    resetGame();
-    return;
-  }
+  // // Set Hard mode
+  // if (event.key == "H" || event.key == "h") {
+  //   hardMode = true;
+  //   resetGame();
+  //   return;
+  // }
 
-  // Set Easy mode
-  if (event.key == "E" || event.key == "e") {
-    hardMode = false;
-    resetGame();
-    return;
-  }
+  // // Set Easy mode
+  // if (event.key == "E" || event.key == "e") {
+  //   hardMode = false;
+  //   resetGame();
+  //   return;
+  // }
 });
 
 function resetGame() {
@@ -317,6 +324,8 @@ function resetGame() {
   frictionX = undefined;
   frictionY = undefined;
 
+  document.dispatchEvent(gameResettedEvent);
+
   mazeElement.style.cssText = `
       transform: rotateY(0deg) rotateX(0deg)
     `;
@@ -328,13 +337,16 @@ function resetGame() {
       cursor: grab;
     `;
 
-  if (hardMode) {
-    noteElement.innerHTML = `Click The Joy-Stick To Start!
-        <p>Hard Mode, Avoid Black Holes. Back To Easy Mode? Press E</p>`;
-  } else {
-    noteElement.innerHTML = `Click The Joy-Stick To Start!
-        <p>Move Every Ball To The Center.</p><p>Ready For Hard Mode? Press H</p>`;
-  }
+  // if (hardMode) {
+  //   noteElement.innerHTML = `Click The Joy-Stick To Start!
+  //       <p>Hard Mode, Avoid Black Holes. Back To Easy Mode? Press E</p>`;
+  // } else {
+  //   noteElement.innerHTML = `Click The Joy-Stick To Start!
+  //       <p>Move Every Ball To The Center.</p><p>Ready For Hard Mode? Press H</p>`;
+  // }
+  noteElement.innerHTML = `Click The Joy-Stick To Start!
+        <p>Move Every Ball To The Center.</p>`;
+
   noteElement.style.opacity = 1;
 
   balls = [
@@ -355,23 +367,23 @@ function resetGame() {
     });
   }
 
-  // Remove previous hole elements
-  holeElements.forEach((holeElement) => {
-    mazeElement.removeChild(holeElement);
-  });
-  holeElements = [];
+  // // Remove previous hole elements
+  // holeElements.forEach((holeElement) => {
+  //   mazeElement.removeChild(holeElement);
+  // });
+  // holeElements = [];
 
-  // Reset hole elements if hard mode
-  if (hardMode) {
-    holes.forEach(({ x, y }) => {
-      const ball = document.createElement("div");
-      ball.setAttribute("class", "black-hole");
-      ball.style.cssText = `left: ${x}px; top: ${y}px; `;
+  // // Reset hole elements if hard mode
+  // if (hardMode) {
+  //   holes.forEach(({ x, y }) => {
+  //     const ball = document.createElement("div");
+  //     ball.setAttribute("class", "black-hole");
+  //     ball.style.cssText = `left: ${x}px; top: ${y}px; `;
 
-      mazeElement.appendChild(ball);
-      holeElements.push(ball);
-    });
-  }
+  //     mazeElement.appendChild(ball);
+  //     holeElements.push(ball);
+  //   });
+  // }
 }
 
 function main(timestamp) {
@@ -652,16 +664,21 @@ function main(timestamp) {
         (ball) => distance2D(ball, { x: 350 / 2, y: 315 / 2 }) < 65 / 2
       )
     ) {
+      // resetTimer();
+      // noteElement.innerHTML = `Congrats, You Did It!
+      //   ${!hardMode ? "<p>Press H For Hard Mode</p>" : ""}
+      //   <p>
+      //     Follow Me
+      //     <a href="https://www.instagram.com/bhavinharish/" , target="_blank"
+      //       >@BhavinHarish</a
+      //     >
+      //   </p>`;
       noteElement.innerHTML = `Congrats, You Did It!
-        ${!hardMode ? "<p>Press H For Hard Mode</p>" : ""}
-        <p>
-          Follow Me
-          <a href="https://www.instagram.com/bhavinharish/" , target="_blank"
-            >@BhavinHarish</a
-          >
-        </p>`;
+        ${!hardMode ? "<p>Press Esc to reset</p>" : ""}`;
       noteElement.style.opacity = 1;
       gameInProgress = false;
+
+      document.dispatchEvent(gameEndedEvent);
     } else {
       previousTimestamp = timestamp;
       window.requestAnimationFrame(main);
@@ -677,3 +694,4 @@ function main(timestamp) {
     } else throw error;
   }
 }
+
