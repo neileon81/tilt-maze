@@ -7,6 +7,12 @@ class Score < ApplicationRecord
   def refresh_leaderboard
     leaderboard = Score.first(5)
 
+    if leaderboard.include? self
+      place = leaderboard.find_index(self) + 1
+      msg = "#{self.name} is in #{place.ordinalize} place with #{self.time}"
+      broadcast_append_to("notifications", target: "notification_list", partial: "notification", locals: {message: msg})
+    end
+
     broadcast_update_to("scores", target: "leaderboard", partial: "leaderboard", locals: {scores: leaderboard})
   end
 
