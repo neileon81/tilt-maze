@@ -241,7 +241,7 @@ const holes = [
 }));
 
 joystickHeadElement.addEventListener("mousedown", function (event) {
-  if (!gameInProgress) {
+  if (!gameInProgress && previousTimestamp == undefined) { //test
     mouseStartX = event.clientX;
     mouseStartY = event.clientY;
     gameInProgress = true;
