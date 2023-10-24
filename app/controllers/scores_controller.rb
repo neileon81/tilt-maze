@@ -1,5 +1,5 @@
 class ScoresController < ApplicationController
-  before_action :set_score, only: %i[ show edit update destroy ]
+  before_action :set_score, only: %i[ show destroy ]
 
   # # GET /scores or /scores.json
   # def index
