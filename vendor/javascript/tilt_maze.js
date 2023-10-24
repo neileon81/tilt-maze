@@ -241,7 +241,7 @@ const holes = [
 }));
 
 joystickHeadElement.addEventListener("mousedown", function (event) {
-  if (!gameInProgress && previousTimestamp == undefined) { //test
+  if (!gameInProgress) {
     mouseStartX = event.clientX;
     mouseStartY = event.clientY;
     gameInProgress = true;
@@ -660,9 +660,12 @@ function main(timestamp) {
 
     // Win detection
     if (
-      balls.every(
-        (ball) => distance2D(ball, { x: 350 / 2, y: 315 / 2 }) < 65 / 2
-      )
+      // balls.every(
+      //   (ball) => distance2D(ball, { x: 350 / 2, y: 315 / 2 }) < 65 / 2
+      // )
+      balls.reduce(
+        (sum, ball) => distance2D(ball, { x: 350 / 2, y: 315 / 2 }) < 65 / 2 ? sum + 1 : sum, 0
+      ) == 4
     ) {
       // resetTimer();
       // noteElement.innerHTML = `Congrats, You Did It!
